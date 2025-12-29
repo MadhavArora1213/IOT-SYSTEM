@@ -1,0 +1,15 @@
+# Firebase credentials - NEVER commit this
+serviceAccountKey.json
+*.json
+
+# Environment files
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+# ../venv
