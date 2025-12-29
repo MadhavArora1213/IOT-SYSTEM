@@ -1,10 +1,13 @@
 # Firebase credentials - NEVER commit this
 serviceAccountKey.json
-*.json
 
 # Environment files
 .env
 .env.local
+
+# Project specific data
+known_faces/
+QR_images/
 
 # Python
 __pycache__/
@@ -12,4 +15,4 @@ __pycache__/
 *.so
 .venv/
 venv/
-# ../venv
+venv-backend/

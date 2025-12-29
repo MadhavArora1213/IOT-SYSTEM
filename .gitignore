@@ -1,1 +1,17 @@
 .venv
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Sub-directory specific venvs and data
+backend/venv-backend/
+backend/.env
+backend/serviceAccountKey.json
+backend/known_faces/
+backend/QR_images/
+frontend/frontend/node_modules/
+frontend/frontend/.expo/
+iot-edge/faces/
+iot-edge/embeddings/
+iot-edge/QR_images/

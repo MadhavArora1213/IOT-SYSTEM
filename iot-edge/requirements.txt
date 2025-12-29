@@ -1,0 +1,13 @@
+opencv-python
+keyboard
+facenet-pytorch
+torch
+torchvision
+pillow
+numpy
+scipy
+qrcode
+uuid
+pyzbar
+requests
+pyttsx3

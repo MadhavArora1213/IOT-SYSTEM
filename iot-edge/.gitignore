@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Project specific data
+faces/
+embeddings/
+QR_images/
+
+# macOS
+.DS_Store
