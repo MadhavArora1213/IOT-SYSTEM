@@ -1,4 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+from config.firebase_config import get_firestore_client
 from services.qr_service import qr_service
 from services.face_service import face_service
 import logging
@@ -33,10 +34,26 @@ async def verify_gatepass(
     face_bytes = await face_image.read()
     
     # 3. Verify Face
-    # In this system, we expect the face to be registered under the user's name or roll
-    # Let's use roll as the identifier for embeddings if possible, or name as per user script
-    is_valid_face, score_or_reason = face_service.verify_face(face_bytes, user_name)
+    # Fetch user data to retrieve stored embedding
+    db = get_firestore_client()
+    user_doc = db.collection('users').document(user_roll).get()
     
+    is_valid_face = False
+    score_or_reason = "User not found or no embedding"
+    
+    if user_doc.exists:
+        user_data = user_doc.to_dict()
+        if "face_embedding" in user_data and user_data["face_embedding"]:
+            logger.info(f"Verifying against stored embedding for {user_roll}")
+            is_valid_face, score_or_reason = face_service.verify_embedding(face_bytes, user_data["face_embedding"])
+        else:
+            # Fallback to local known faces if any (legacy or backup)
+            logger.info(f"No embedding in DB for {user_roll}, trying name lookup {user_name}")
+            is_valid_face, score_or_reason = face_service.verify_face(face_bytes, user_name)
+    else:
+        # Fallback to local
+        is_valid_face, score_or_reason = face_service.verify_face(face_bytes, user_name)
+
     if is_valid_face:
         logger.info(f"Access GRANTED for {user_name} ({user_roll})")
         return {

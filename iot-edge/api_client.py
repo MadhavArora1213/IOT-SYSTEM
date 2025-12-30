@@ -22,3 +22,4 @@ class APIClient:
                 return {"status": "FAIL", "message": f"Server Error: {response.status_code}"}
         except Exception as e:
             return {"status": "FAIL", "message": f"Connection Error: {str(e)}"}
+

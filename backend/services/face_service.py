@@ -63,22 +63,30 @@ class FaceService:
             return True
         return False
 
-    def verify_face(self, face_image_bytes, expected_name):
-        """Verify if the face in face_image_bytes matches expected_name"""
-        if expected_name not in self.embeddings:
-            return False, "User not registered with a face"
-        
-        target_embedding = self.get_embedding(face_image_bytes)
+    def verify_embedding(self, target_face_bytes, known_embedding_list):
+        """Verify face bytes against a specific known embedding"""
+        target_embedding = self.get_embedding(target_face_bytes)
         if target_embedding is None:
-            return False, "No face detected in image"
-        
-        known_embedding = self.embeddings[expected_name]
+            return False, "No face detected in submitted image"
+            
+        # Ensure known is numpy array
+        if isinstance(known_embedding_list, list):
+            known_embedding = np.array(known_embedding_list)
+        else:
+            known_embedding = known_embedding_list
+            
         distance = cosine(target_embedding.flatten(), known_embedding.flatten())
         
-        # Threshold 0.6 as per user script
-        if distance < 0.6:
+        if distance < 0.6: # Threshold
             return True, distance
         else:
             return False, distance
+
+    def verify_face(self, face_image_bytes, expected_name):
+        """Verify if the face in face_image_bytes matches expected_name (from loaded files)"""
+        # ... existing implementation or wrapper ...
+        if expected_name not in self.embeddings:
+             return False, "User not registered with a face (locally)"
+        return self.verify_embedding(face_image_bytes, self.embeddings[expected_name])
 
 face_service = FaceService()
